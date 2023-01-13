@@ -7,12 +7,23 @@ const firebaseConfig = {
     storageBucket: "puntuacion-quiz-ii.appspot.com",
     messagingSenderId: "785165930933",
     appId: "1:785165930933:web:18fb6768a127c598f809fc"
-  };
+};
 
 firebase.initializeApp(firebaseConfig);// Inicializar app Firebase
+const db = firebase.firestore();// db representa mi BBDD //inicia Firestore
 
 let user = firebase.auth().currentUser
 
+const lienzo = document.getElementsByClassName("pantalla_preguntas")[0]
+const arrayPreguntas = [];
+const arrayRespuestas = [];
+let contador = 0
+let aciertos = 0
+let fecha = new Date().toLocaleDateString()
+const totalScore = []
+const userScore = []
+
+//SIGNUP
 const signUpUser = (email, password) => {
     firebase
         .auth()
@@ -36,7 +47,8 @@ const signUpUser = (email, password) => {
             console.log("Error en el sistema" + error.message);
         });
 };
-//"alex@demo.com","123456"
+
+//PASS1 = PASS2
 document.getElementById("form1").addEventListener("submit", function (event) {
     event.preventDefault();
     let email = event.target.elements.email.value;
@@ -44,6 +56,8 @@ document.getElementById("form1").addEventListener("submit", function (event) {
     let pass2 = event.target.elements.pass2.value;
     pass === pass2 ? signUpUser(email, pass) : alert("error password");
 })
+
+//SIGNIN - SIGNOUT
 const signInUser = (email, password) => {
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
@@ -75,6 +89,7 @@ document.getElementById("form2").addEventListener("submit", function (event) {
     signInUser(email, pass)
 })
 document.getElementById("salir").addEventListener("click", signOut);
+
 // Listener de usuario en el sistema
 // Controlar usuario logado
 firebase.auth().onAuthStateChanged(function (user) {
@@ -85,7 +100,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     }
 });
 
-function addScore(userId, score) {
+function subirPuntuacion(userId, score) {
     db.collection('users')
         .where('id', '==', userId)
         .get()
@@ -102,52 +117,57 @@ function addScore(userId, score) {
 };
 
 if (localStorage.length === 0) {
-    const puntuacion2 = {
+    const puntuacion = {
         puntuacion: 0,
         fecha: new Date().toLocaleDateString()
     }
-} else if (!user) {
-    //fire base
-    const db = firebase.firestore();// db representa mi BBDD //inicia Firestore
+}
+//fire base
 
-    const savePuntuacion = (puntuacion2) => {
-        db.collection("puntuacion").add({
-            puntuacion2
+const savePuntuacion = (puntuacion2) => {
+    db.collection("puntuacion").add({
+        puntuacion2
+    })
+        .then(function (docRef) {
+            console.log("puntuacion añadida con la ID: ", docRef.id);
         })
-            .then(function (docRef) {
-                console.log("puntuacion añadida con la ID: ", docRef.id);
-            })
-            .catch(function (error) {
-                console.error("Error añadiendo puntuacion", error);
-            })
-    }
+        .catch(function (error) {
+            console.error("Error añadiendo puntuacion", error);
+        })
+}
 
-    // saco en variables globales las puntuaciones
+// saco en variables globales las puntuaciones
+function sacarPuntuacion() {
     const puntuacion2 = JSON.parse(localStorage.getItem("score"));
     const aciertos1 = puntuacion2.puntuacion;
     console.log(aciertos1);
     const fechaAciertos = puntuacion2.fecha;
     console.log(fechaAciertos);
-
-    const btnFinal = document.getElementById("btnFinal")
-    btnFinal.addEventListener("click", savePuntuacion(puntuacion2))
-} else {
-    addScore(firebase.auth().currentUser.uid, userScore)
+    userScore = [aciertos1, fechaAciertos]
 }
+
+function subirPuntuacion(userID, userScore) {
+    db.collection('users')
+        .where('id', '==', userID)
+        .get()
+        .then((snapshot) => {
+            snapshot.forEach((doc) => {
+                if (!doc.data().hasOwnProperty('puntuaciones')) {
+                    doc.ref.update({ puntuaciones: [userScore] });
+                } else {
+                    doc.ref.update({ puntuaciones: doc.data().favs.concat(userScore) })
+                }
+                alert('Added to Score')
+            })
+        });
+};
+
+const btnFinal = document.getElementById("btnFinal")
+btnFinal.addEventListener("click", () => (sacarPuntuacion(), subirPuntuacion(firebase.auth().currentUser.uid, userScore)))
+
 
 
 // pintar preguntas
-
-const lienzo = document.getElementsByClassName("pantalla_preguntas")[0]
-
-const arrayPreguntas = [];
-const arrayRespuestas = [];
-let contador = 0
-let aciertos = 0
-let fecha = new Date().toLocaleDateString()
-const totalScore = []
-
-let userScore = saveScore()
 
 async function sacarPreguntas() {
     let resp = await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
@@ -171,7 +191,7 @@ function printQuestions(arrayPreguntas, lienzo) {
 
         tarjeta.innerHTML =
             `<fieldset>
-        <legend id=${i}>${i+1} - ${arrayPreguntas[i].question}</legend>
+        <legend id=${i}>${i + 1} - ${arrayPreguntas[i].question}</legend>
         <div>
         <input class="pregunta" id="a${i}" type="radio" name=pregunta${i}" value=${q1.split(' ').join('')}>
         <label id=r${i}0 for="a${i}">${q1}</label>
@@ -247,11 +267,11 @@ function pantallaFinal() {
     for (let i = 0; i < arrayPreguntas.length; i++) {
         let chosen = respuestas[i].value
         arrayRespuestas.push(chosen)
-       }
+    }
 
     validar();
 
-    saveScore();
+    //saveScore();
 
 
 
@@ -270,8 +290,8 @@ function pantallaFinal() {
 }
 
 function validar() {
-    for (let i = 0; i < arrayPreguntas.length; i++){
-        if (arrayRespuestas[i] === arrayPreguntas[i].correct_answer.split(' ').join('')){
+    for (let i = 0; i < arrayPreguntas.length; i++) {
+        if (arrayRespuestas[i] === arrayPreguntas[i].correct_answer.split(' ').join('')) {
             aciertos++
         }
     }
@@ -295,40 +315,36 @@ async function startQuiz() {
 }
 
 // local storage
-function saveScore() {
-        // Parse any JSON previously stored in allEntries
-        //let existingEntries = JSON.parse(localStorage.getItem("puntuaciones"));
-        //if(existingEntries == null) existingEntries = [];
-        let score = {
-            "puntuacion": aciertos,
-            "fecha": fecha
-        };
-    return score;
-        localStorage.setItem("score", JSON.stringify(score));
-        // Save allEntries back to local storage
-        existingEntries.push(score);
-        localStorage.setItem("puntuaciones", JSON.stringify(existingEntries));
+function localScore() {
+    //Parse any JSON previously stored in allEntries
+    let existingEntries = JSON.parse(localStorage.getItem("puntuaciones"));
+    if (existingEntries == null) existingEntries = [{ "puntuacion": 0, "fecha": fecha }];
+
+    let score = {
+        "puntuacion": aciertos,
+        "fecha": fecha
+    }
+
+    localStorage.setItem("score", JSON.stringify(score));
+
+    // Save allEntries back to local storage
+    existingEntries.push(score);
+    localStorage.setItem("puntuaciones", JSON.stringify(existingEntries));
 }
 
 
 startQuiz()
 
-if (!user) {
-    let arrayX = []
-    let arrayY = []
-    if (localStorage.length !== 0) {
-        let existingEntries = JSON.parse(localStorage.getItem("puntuaciones"));
-        for (let i = 0; i < existingEntries.length; i++) {
-            arrayY.push(existingEntries[i].puntuacion);
-            arrayX.push(existingEntries[i].fecha);
-        }
+let arrayX = []
+let arrayY = []
+if (localStorage.length !== 0) {
+    let existingEntries = JSON.parse(localStorage.getItem("puntuaciones"));
+    for (let i = 0; i < existingEntries.length; i++) {
+        arrayY.push(existingEntries[i].puntuacion);
+        arrayX.push(existingEntries[i].fecha);
     }
-} else {
-    let arrayX = [];
-    let arrayY = [];
-    arrayY.push(firebase.auth().currentUser.id)
-    arrayX.push(firebase.auth().currentUser)
 }
+
 
 
 // grafica
@@ -336,23 +352,23 @@ if (!user) {
 var data = {
     labels: arrayX.slice(-4),
     series: [
-      arrayY.slice(-4)
+        arrayY.slice(-4)
     ]
-  };
-  var options = {
+};
+var options = {
     height: 400,
     onlyInteger: true,
-    low:0,
+    low: 0,
     axisX: {
-      offset:200
+        offset: 200
     },
     axisY: {
-      onlyInteger: true,
-      offset: 80,
-      labelInterpolationFnc: function (value) {
-        return '' + value + '';
-      }
+        onlyInteger: true,
+        offset: 80,
+        labelInterpolationFnc: function (value) {
+            return '' + value + '';
+        }
     }
-  };
+};
 
-  new Chartist.Bar('.ct-chart', data, options);
+new Chartist.Bar('.ct-chart', data, options);
