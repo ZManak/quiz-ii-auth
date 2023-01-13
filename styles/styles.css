@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
+
+*{
+    box-sizing: border-box;
+    font-family: 'Mochiy Pop One';
+}
+
+body {
+    background-color: rgb(53, 255, 161);
+}
+
+/*TITULO QUIZ*/
+h1{
+    width: fit-content;
+    background-color: rgb(162, 210, 255);
+    margin: 40px auto;
+    border-radius: 60px;
+    box-shadow: 5px 5px 0 coral;
+    padding: 15px 20px;
+}
+
+/* TITULOS VARIOS */
+h3 {
+    width: fit-content;
+    background-color: #fff;
+    border-radius: 60px;
+    box-shadow: 5px 5px 0 rebeccapurple;
+    padding: 15px 20px;
+}
+
+/*enunciado de cada pregunta*/
+legend {
+    font-size: 20px;
+    color: rgb(34, 54, 57);
+    text-align: center;
+    padding: 10px;
+}
+
+/*cada respuesta esta en un label*/
+label {
+    margin: 3px;
+    padding: 10px;
+}
+
+
+
+/* ID,S DE LAS RESPUESTAS DE CADA PREGUNTA.*/
+#r00, #r10, #r20, #r30, #r40, #r50, #r60, #r70, #r80, #r90{
+    color:black;
+    border: 1px solid black;
+    border-radius: 15px;
+    background-color: rgb(205, 180, 219);
+}
+
+#r01, #r11, #r21, #r31, #r41, #r51, #r61, #r71, #r81, #r91  {
+    color: black;
+    background-color: rgb(255, 200, 221);
+    border: 1px solid black;
+    border-radius: 15px;
+}
+
+#r02, #r12, #r22, #r32, #r42, #r52, #r62, #r72, #r82, #r92  {
+    color: black;
+    background-color: rgb(255, 175, 204);
+    border: 1px solid black;
+    border-radius: 15px;
+}
+
+#r03, #r13, #r23, #r33, #r43, #r53 , #r63, #r73 , #r83, #r93 {
+    color:black;
+    background-color:rgb(189, 224, 254);
+    border: 1px solid black;
+    border-radius: 15px;
+}
+
+/*Div para boton de siguiente pregunta*/
+
+div {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/* Contenedor boton siguiente pregunta*/
+article {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+
+.pregunta0, .pregunta1, .pregunta2, .pregunta3, .pregunta4, .pregunta5, .pregunta6, .pregunta7, .pregunta8, .pregunta9 {
+    display: none;
+}
+
+.pantalla_inicial {
+    display: block;
+}
+
+.pantalla_final {
+    display: none;
+}
+
+.boton, .btn{
+    border: 2px solid white;
+    width: 30%;
+    height: 40%;
+    background: rgb(162, 210, 255);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: .5s;
+    font-size: 15px;
+    margin: 20px;
+}
+
+.boton:hover, .btn{
+    transform: scale(1.1);
+}
+
+/* GRAFICA*/
+
+.chart-container {
+    padding: 100px;
+    width: 100%; 
+    margin: 0 auto;
+  }
+
+/*MEDIA QUERYS DARLE UNA VUELTA QUE MODIFICAR EN CASO DE CAMBIAR EL DISPOSITIVO*/
+
+@media (max-width: 654px) {
+    .chart-container {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .ct-chart {
+    width: 50%; 
+    height: 75vh; 
+  }
+}
+
+@media (min-width: 992px) {
+  .ct-chart {
+    width: 25%; 
+    height: 100vh; 
+  }
+}
+
+
+/*Registro*/
+
+form {
+    border: 2px solid black;
+    width: 90%;
+    margin: 20px;
+}
+#form1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#form2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+#formularios {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/*boton de logout*/
+.logout {
+    background-color:darkslateblue
+}

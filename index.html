@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/normalize.css" />
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <title>QUIZ II</title>
+    <!-- LINK CHARTLIST CDN-->
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css"
+    />
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <!-- LINK CHARTLIST CDN-->
+  </head>
+  <body>
+    <header>
+      <h1>QUIZ</h1>
+    </header>
+
+    <main>
+      <section class="pantalla_inicial">
+        <article id="formularios">
+          <div>
+            <h3>BIENVENIDO AL QUIZ</h3>
+          </div>
+          <button id="crear" class="boton">Crear usuario</button>
+          <h3>Formulario de Registro</h3>
+          <form id="form1" action="#" method="POST">
+            <label for="email">Email:</label><br />
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Introduce email..."
+            /><br />
+            <label for="pass">Password:</label><br />
+            <input
+              type="password"
+              id="pass"
+              name="pass"
+              placeholder="Introduce password..."
+            /><br />
+            <label for="pass2">Repite password:</label><br />
+            <input
+              type="password"
+              id="pass2"
+              name="pass2"
+              placeholder="Repite password..."
+            /><br /><br />
+            <input class="boton" type="submit" id="signUp" value="Enviar" />
+          </form>
+          <h3>Formulario de Login</h3>
+          <form id="form2" action="#" method="POST">
+            <label for="email2">Email:</label><br />
+            <input
+              type="email"
+              id="email2"
+              name="email2"
+              placeholder="Introduce email..."
+            /><br />
+            <label for="pass3">Password:</label><br />
+            <input
+              type="password"
+              id="pass3"
+              name="pass3"
+              placeholder="Introduce password..."
+            /><br />
+            <input class="boton" type="submit" value="Enviar" />
+          </form>
+          <button class="boton logout" id="salir">Logout</button>
+        </article>
+          <div>
+
+          <button class="boton" id="botonEmpezar">COMENZAR A JUGAR</button>
+        </div>
+
+        <div>
+          <h3>Tus anteriores resultados :</h3>
+        </div>
+
+        <section class="chart-container">
+          <div class="ct-chart ct-perfect-fourth"></div>
+        </section>
+      </section>
+
+      <section class="pantalla_preguntas"></section>
+
+      <section class="pantalla_final">
+        <div>
+          <h3>HAS ACERTADO :</h3>
+        </div>
+
+        <div id="pantalla_final">
+          <h3><span id="numCorrectas"></span></h3>
+        </div>
+
+        <div>
+          <button
+            class="btn"
+            id="btnFinal"
+            onclick="window.location.assign('../index.html')"
+          >
+            VOLVER AL INICIO o a jugar
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-auth.js"></script>
+    <script src="/scripts/prueba.js"></script>
+    <script src="/scripts/auth.js"></script>
+  </body>
+</html>
