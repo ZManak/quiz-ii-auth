@@ -20,8 +20,7 @@ const arrayRespuestas = [];
 let contador = 0
 let aciertos = 0
 let fecha = new Date().toLocaleDateString()
-const totalScore = []
-const userScore = []
+let userScore = {"puntuacion": 0, "fecha": fecha};
 
 //SIGNUP
 const signUpUser = (email, password) => {
@@ -82,14 +81,32 @@ const signOut = () => {
         console.log("hubo un error: " + error);
     });
 }
+
+//ANON
+function anon () { 
+    firebase.auth().signInAnonymously()
+    .then(() => {
+    console.log("Sesión anónima");
+    alert("Sesión anónima. No se gurdarán puntuaciones")
+  })
+  .catch((error) => {
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    console.log(errorCode)
+    console.log(errorMessage)
+  });
+}
+
 document.getElementById("form2").addEventListener("submit", function (event) {
     event.preventDefault();
     let email = event.target.elements.email2.value;
     let pass = event.target.elements.pass3.value;
     signInUser(email, pass)
 })
-document.getElementById("salir").addEventListener("click", signOut);
+document.getElementById("salir").addEventListener("click", ()=>{signOut()});
+document.getElementById("anon").addEventListener("click", ()=>{anon()})
 
+  
 // Listener de usuario en el sistema
 // Controlar usuario logado
 firebase.auth().onAuthStateChanged(function (user) {
@@ -100,31 +117,24 @@ firebase.auth().onAuthStateChanged(function (user) {
     }
 });
 
-function subirPuntuacion(userId, score) {
+function subirPuntuacion(userId, userScore) {
     db.collection('users')
         .where('id', '==', userId)
         .get()
         .then((snapshot) => {
             snapshot.forEach((doc) => {
                 if (!doc.data().hasOwnProperty('puntuaciones')) {
-                    doc.ref.update({ puntuaciones: [] });
+                    doc.ref.update({ puntuaciones: [userScore] });
                 } else {
-                    doc.ref.update({ puntuaciones: doc.data().favs.concat(score) })
+                    doc.ref.update({ puntuaciones: doc.data().puntuaciones.concat(userScore) })
                 }
                 alert('Puntuación guardada')
             })
         });
 };
 
-if (localStorage.length === 0) {
-    const puntuacion = {
-        puntuacion: 0,
-        fecha: new Date().toLocaleDateString()
-    }
-}
-//fire base
-
-const savePuntuacion = (puntuacion2) => {
+//Guarda puntuaciones anónimas
+/*const savePuntuacion = (puntuacion2) => {
     db.collection("puntuacion").add({
         puntuacion2
     })
@@ -134,16 +144,15 @@ const savePuntuacion = (puntuacion2) => {
         .catch(function (error) {
             console.error("Error añadiendo puntuacion", error);
         })
-}
+}*/
 
 // saco en variables globales las puntuaciones
 function sacarPuntuacion() {
-    const puntuacion2 = JSON.parse(localStorage.getItem("score"));
-    const aciertos1 = puntuacion2.puntuacion;
-    console.log(aciertos1);
-    const fechaAciertos = puntuacion2.fecha;
-    console.log(fechaAciertos);
-    userScore = [aciertos1, fechaAciertos]
+    //const puntuacion2 = JSON.parse(localStorage.getItem("score"));
+    const aciertosUser = aciertos;
+    console.log(aciertosUser);
+    console.log(fecha);
+    userScore = {"puntuacion":aciertosUser, "fecha":fecha}
 }
 
 function subirPuntuacion(userID, userScore) {
@@ -155,15 +164,15 @@ function subirPuntuacion(userID, userScore) {
                 if (!doc.data().hasOwnProperty('puntuaciones')) {
                     doc.ref.update({ puntuaciones: [userScore] });
                 } else {
-                    doc.ref.update({ puntuaciones: doc.data().favs.concat(userScore) })
+                    doc.ref.update({ puntuaciones: doc.data().puntuaciones.concat(userScore) })
                 }
                 alert('Added to Score')
             })
         });
 };
 
-const btnFinal = document.getElementById("btnFinal")
-btnFinal.addEventListener("click", () => (sacarPuntuacion(), subirPuntuacion(firebase.auth().currentUser.uid, userScore)))
+//const btnFinal = document.getElementById("btnFinal")
+//btnFinal.addEventListener("click", () => (sacarPuntuacion(), subirPuntuacion(firebase.auth().currentUser.uid, userScore)))
 
 
 
@@ -271,9 +280,9 @@ function pantallaFinal() {
 
     validar();
 
-    //saveScore();
+    sacarPuntuacion();
 
-
+    subirPuntuacion(firebase.auth().currentUser.uid, userScore);
 
     const pantallaFinal = document.querySelector(".pantalla_final");
     pantallaFinal.style.display = "block";
