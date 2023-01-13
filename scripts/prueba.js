@@ -12,6 +12,26 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);// Inicializar app Firebase
 const db = firebase.firestore();// db representa mi BBDD //inicia Firestore
 
+
+
+// seleccion el boton de register/login
+const btnRegistroLogin = document.querySelector("#login");
+let esVisible = false;
+
+// hacer que el boton aparezca y desaparezca al pulsarlo.
+btnRegistroLogin.addEventListener("click", function(){
+    if (esVisible) {
+        document.querySelector("#formularios1").style.display = "none";
+        esVisible = false;
+    } else {
+        document.querySelector("#formularios1").style.display = "block";
+        esVisible = true;
+    }
+});
+
+
+
+
 let user = firebase.auth().currentUser
 
 const lienzo = document.getElementsByClassName("pantalla_preguntas")[0]
