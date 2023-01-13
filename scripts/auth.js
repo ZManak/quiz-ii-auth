@@ -1,4 +1,4 @@
-const createUser = (user) => {
+/*const createUser = (user) => {
     db.collection("users")
       .add(user)
       .then((docRef) => console.log("Document written with ID: ", docRef.id))
@@ -39,7 +39,7 @@ const createUser = (user) => {
       .catch((error) => {
         console.log("Error getting document:", error);
       });
-  }
+  }*/
   //readOne("690WYQfTZUoEFnq5q1Ov");
   /**************Firebase Auth*****************/
   const signUpUser = (email, password) => {
@@ -113,3 +113,19 @@ const createUser = (user) => {
       console.log("no hay usuarios en el sistema");
     }
   });
+
+function addScore(userId, score) {
+  db.collection('users')
+    .where('id', '==', userId)
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        if (!doc.data().hasOwnProperty('puntuaciones')) {
+          doc.ref.update({ puntuaciones: [] });
+        } else {
+          doc.ref.update({ puntuaciones: doc.data().favs.concat(score) })
+        }
+        alert('Puntuación guardada')
+      })
+    });
+};

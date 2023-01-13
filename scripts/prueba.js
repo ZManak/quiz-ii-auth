@@ -9,17 +9,104 @@ const firebaseConfig = {
     appId: "1:785165930933:web:18fb6768a127c598f809fc"
   };
 
-
 firebase.initializeApp(firebaseConfig);// Inicializar app Firebase
 
+let user = firebase.auth().currentUser
+
+const signUpUser = (email, password) => {
+    firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            // Signed in
+            let user = userCredential.user;
+            console.log(`se ha registrado ${user.email} ID:${user.uid}`)
+            alert(`se ha registrado ${user.email} ID:${user.uid}`)
+            // ...
+            // Guarda El usuario en Firestore
+            createUser({
+                id: user.uid,
+                email: user.email,
+                puntuaciones: []
+            });
+        })
+        .catch((error) => {
+            let errorCode = error.code;
+            let errorMessage = error.message;
+            console.log("Error en el sistema" + error.message);
+        });
+};
+//"alex@demo.com","123456"
+document.getElementById("form1").addEventListener("submit", function (event) {
+    event.preventDefault();
+    let email = event.target.elements.email.value;
+    let pass = event.target.elements.pass.value;
+    let pass2 = event.target.elements.pass2.value;
+    pass === pass2 ? signUpUser(email, pass) : alert("error password");
+})
+const signInUser = (email, password) => {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            // Signed in
+            let user = userCredential.user;
+            console.log(`se ha logado ${user.email} ID:${user.uid}`)
+            alert(`se ha logado ${user.email} ID:${user.uid}`)
+            console.log("USER", user);
+        })
+        .catch((error) => {
+            let errorCode = error.code;
+            let errorMessage = error.message;
+            console.log(errorCode)
+            console.log(errorMessage)
+        });
+}
+const signOut = () => {
+    let user = firebase.auth().currentUser;
+    firebase.auth().signOut().then(() => {
+        console.log("Sale del sistema: " + user.email)
+    }).catch((error) => {
+        console.log("hubo un error: " + error);
+    });
+}
+document.getElementById("form2").addEventListener("submit", function (event) {
+    event.preventDefault();
+    let email = event.target.elements.email2.value;
+    let pass = event.target.elements.pass3.value;
+    signInUser(email, pass)
+})
+document.getElementById("salir").addEventListener("click", signOut);
+// Listener de usuario en el sistema
+// Controlar usuario logado
+firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+        console.log(`Está en el sistema:${user.email} ${user.uid}`);
+    } else {
+        console.log("no hay usuarios en el sistema");
+    }
+});
+
+function addScore(userId, score) {
+    db.collection('users')
+        .where('id', '==', userId)
+        .get()
+        .then((snapshot) => {
+            snapshot.forEach((doc) => {
+                if (!doc.data().hasOwnProperty('puntuaciones')) {
+                    doc.ref.update({ puntuaciones: [] });
+                } else {
+                    doc.ref.update({ puntuaciones: doc.data().favs.concat(score) })
+                }
+                alert('Puntuación guardada')
+            })
+        });
+};
 
 if (localStorage.length === 0) {
     const puntuacion2 = {
         puntuacion: 0,
         fecha: new Date().toLocaleDateString()
     }
-} else {
-
+} else if (!user) {
     //fire base
     const db = firebase.firestore();// db representa mi BBDD //inicia Firestore
 
@@ -44,6 +131,8 @@ if (localStorage.length === 0) {
 
     const btnFinal = document.getElementById("btnFinal")
     btnFinal.addEventListener("click", savePuntuacion(puntuacion2))
+} else {
+    addScore(firebase.auth().currentUser.uid, userScore)
 }
 
 
@@ -57,6 +146,8 @@ let contador = 0
 let aciertos = 0
 let fecha = new Date().toLocaleDateString()
 const totalScore = []
+
+let userScore = saveScore()
 
 async function sacarPreguntas() {
     let resp = await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
@@ -162,6 +253,8 @@ function pantallaFinal() {
 
     saveScore();
 
+
+
     const pantallaFinal = document.querySelector(".pantalla_final");
     pantallaFinal.style.display = "block";
 
@@ -204,12 +297,13 @@ async function startQuiz() {
 // local storage
 function saveScore() {
         // Parse any JSON previously stored in allEntries
-        let existingEntries = JSON.parse(localStorage.getItem("puntuaciones"));
-        if(existingEntries == null) existingEntries = [];
+        //let existingEntries = JSON.parse(localStorage.getItem("puntuaciones"));
+        //if(existingEntries == null) existingEntries = [];
         let score = {
             "puntuacion": aciertos,
             "fecha": fecha
         };
+    return score;
         localStorage.setItem("score", JSON.stringify(score));
         // Save allEntries back to local storage
         existingEntries.push(score);
@@ -219,16 +313,22 @@ function saveScore() {
 
 startQuiz()
 
-let arrayX = []
-let arrayY = []
-if (localStorage.length !== 0) {
-    let existingEntries = JSON.parse(localStorage.getItem("puntuaciones"));
-    for (let i = 0; i < existingEntries.length; i++) {
-        arrayY.push(existingEntries[i].puntuacion);
-        arrayX.push(existingEntries[i].fecha);
+if (!user) {
+    let arrayX = []
+    let arrayY = []
+    if (localStorage.length !== 0) {
+        let existingEntries = JSON.parse(localStorage.getItem("puntuaciones"));
+        for (let i = 0; i < existingEntries.length; i++) {
+            arrayY.push(existingEntries[i].puntuacion);
+            arrayX.push(existingEntries[i].fecha);
+        }
     }
+} else {
+    let arrayX = [];
+    let arrayY = [];
+    arrayY.push(firebase.auth().currentUser.id)
+    arrayX.push(firebase.auth().currentUser)
 }
-
 
 
 // grafica
