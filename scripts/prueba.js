@@ -22,6 +22,13 @@ let aciertos = 0
 let fecha = new Date().toLocaleDateString()
 let userScore = {"puntuacion": 0, "fecha": fecha};
 
+createUser = (user) => {
+    db.collection("users")
+      .add(user)
+      .then((docRef) => console.log("Document written with ID: ", docRef.id))
+      .catch((error) => console.error("Error adding document: ", error));
+  };
+  
 //SIGNUP
 const signUpUser = (email, password) => {
     firebase
@@ -171,11 +178,6 @@ function subirPuntuacion(userID, userScore) {
         });
 };
 
-//const btnFinal = document.getElementById("btnFinal")
-//btnFinal.addEventListener("click", () => (sacarPuntuacion(), subirPuntuacion(firebase.auth().currentUser.uid, userScore)))
-
-
-
 // pintar preguntas
 
 async function sacarPreguntas() {
@@ -324,7 +326,7 @@ async function startQuiz() {
 }
 
 // local storage
-function localScore() {
+/*function localScore() {
     //Parse any JSON previously stored in allEntries
     let existingEntries = JSON.parse(localStorage.getItem("puntuaciones"));
     if (existingEntries == null) existingEntries = [{ "puntuacion": 0, "fecha": fecha }];
@@ -339,7 +341,7 @@ function localScore() {
     // Save allEntries back to local storage
     existingEntries.push(score);
     localStorage.setItem("puntuaciones", JSON.stringify(existingEntries));
-}
+}*/
 
 
 startQuiz()
