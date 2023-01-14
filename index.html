@@ -22,12 +22,17 @@
 
     <main>
       <section class="pantalla_inicial">
+
         <article id="formularios">
           <div>
             <h3>BIENVENIDO AL QUIZ</h3>
           </div>
+          
           <button id="anon" class="boton">Anónimo</button>
-          <h3>Formulario de Registro</h3>
+          <button id="login" class="boton" >Register/Login</button>
+
+          <div id="formularios1">
+            <h3>Formulario de Registro</h3>
           <form id="form1" action="#" method="POST">
             <label for="email">Email:</label><br />
             <input
@@ -52,6 +57,7 @@
             /><br /><br />
             <input class="boton" type="submit" id="signUp" value="Enviar" />
           </form>
+
           <h3>Formulario de Login</h3>
           <form id="form2" action="#" method="POST">
             <label for="email2">Email:</label><br />
@@ -70,10 +76,13 @@
             /><br />
             <input class="boton" type="submit" value="Enviar" />
           </form>
-          <button class="boton logout" id="salir">Logout</button>
-        </article>
-          <div>
+        </div>
 
+        <button class="boton logout" id="salir">Logout</button>
+          
+        </article>
+
+        <div>
           <button class="boton" id="botonEmpezar">COMENZAR A JUGAR</button>
         </div>
 
