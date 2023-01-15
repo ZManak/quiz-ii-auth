@@ -14,6 +14,7 @@
     />
     <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
     <!-- LINK CHARTLIST CDN-->
+    
   </head>
   <body>
     <header>
@@ -22,12 +23,18 @@
 
     <main>
       <section class="pantalla_inicial">
+
         <article id="formularios">
           <div>
             <h3>BIENVENIDO AL QUIZ</h3>
           </div>
-          <button id="crear" class="boton">Crear usuario</button>
-          <h3>Formulario de Registro</h3>
+          
+          <button id="anon" class="boton">Anónimo</button>
+          <button id="login" class="boton" >Register/Login</button>
+          <div class="email-circle">Bienvenido</div>
+
+          <div id="formularios1">
+            <h3>Formulario de Registro</h3>
           <form id="form1" action="#" method="POST">
             <label for="email">Email:</label><br />
             <input
@@ -52,6 +59,7 @@
             /><br /><br />
             <input class="boton" type="submit" id="signUp" value="Enviar" />
           </form>
+
           <h3>Formulario de Login</h3>
           <form id="form2" action="#" method="POST">
             <label for="email2">Email:</label><br />
@@ -70,10 +78,13 @@
             /><br />
             <input class="boton" type="submit" value="Enviar" />
           </form>
-          <button class="boton logout" id="salir">Logout</button>
-        </article>
-          <div>
+        </div>
 
+        <button class="boton logout" id="salir">Logout</button>
+          
+        </article>
+
+        <div>
           <button class="boton" id="botonEmpezar">COMENZAR A JUGAR</button>
         </div>
 
@@ -117,6 +128,5 @@
     <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-auth.js"></script>
     <script src="/scripts/prueba.js"></script>
-    <script src="/scripts/auth.js"></script>
   </body>
 </html>
