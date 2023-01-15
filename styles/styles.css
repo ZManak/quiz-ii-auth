@@ -169,7 +169,6 @@ form {
     align-items: center;
     
 }
-
 #formularios {
     display: flex;
     flex-direction: column;
@@ -177,9 +176,9 @@ form {
 }
 
 #formularios1 {
-    display: inline-block;
+    display: flex;
     display: none;
-    flex-direction: column;
+    flex-direction: ;
     align-items: center;
 }
 
@@ -188,3 +187,21 @@ form {
 .logout {
     background-color:darkslateblue
 }
+
+.email-circle {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 40px;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 50%;
+    border: 5px solid white;
+    background-color: rgb(162, 210, 255);
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+    line-height: 50px;
+    margin-left: 10px;
+  }
+  
