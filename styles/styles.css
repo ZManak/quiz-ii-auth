@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: rgb(53, 255, 161);
+    background-color: lightgoldenrodyellow
 }
 
 /*TITULO QUIZ*/
@@ -178,7 +178,7 @@ form {
 #formularios1 {
     display: flex;
     display: none;
-    flex-direction: ;
+    flex-direction: column;
     align-items: center;
 }
 

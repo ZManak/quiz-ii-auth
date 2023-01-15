@@ -64,7 +64,7 @@ const signUpUser = (email, password) => {
     .catch((error) => {
       let errorCode = error.code;
       let errorMessage = error.message;
-      console.log("Error en el sistema" + error.message);
+      console.log("Error en el sistema" + errorCode + errorMessage);
     });
 };
 
@@ -92,13 +92,9 @@ const signInUser = (email, password) => {
     .auth()
     .signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
-      // Signed in
-      
       let user = userCredential.user;
       console.log(`se ha logado ${user.email} ID:${user.uid}`);
       alert(`se ha logado ${user.email} ID:${user.uid}`);
-      //console.log("USER", user);
-      // dentro de la función de inicio de sesión o registro
     let email = user.email;
     document.querySelector('.email-circle').innerHTML = `Bienvenido ${email}`;;
     })
@@ -147,13 +143,12 @@ document.getElementById("form2").addEventListener("submit", function (event) {
 });
 document.getElementById("salir").addEventListener("click", () => {
   signOut();
+  document.location.reload("true");
 });
 document.getElementById("anon").addEventListener("click", () => {
   anon();
 });
 
-// Listener de usuario en el sistema
-// Controlar usuario logado
 firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     console.log(`Está logeado el usuario:${user.email} ${user.uid}`)
