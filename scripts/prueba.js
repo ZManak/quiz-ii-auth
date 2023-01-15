@@ -30,8 +30,6 @@ btnRegistroLogin.addEventListener("click", function(){
 });
 
 
-
-
 let user = firebase.auth().currentUser
 
 const lienzo = document.getElementsByClassName("pantalla_preguntas")[0]
@@ -39,9 +37,16 @@ const arrayPreguntas = [];
 const arrayRespuestas = [];
 let contador = 0
 let aciertos = 0
-let fecha = new Date().toLocaleDateString()
+let fecha = new Date().toLocaleString()
 let userScore = {"puntuacion": 0, "fecha": fecha};
 
+//CREATE USER
+const createUser = (user) => {
+    db.collection("users")
+      .add(user)
+      .then((docRef) => console.log("Document written with ID: ", docRef.id))
+      .catch((error) => console.error("Error adding document: ", error));
+  };
 //SIGNUP
 const signUpUser = (email, password) => {
     firebase
@@ -50,8 +55,8 @@ const signUpUser = (email, password) => {
         .then((userCredential) => {
             // Signed in
             let user = userCredential.user;
-            console.log(`se ha registrado ${user.email} ID:${user.uid}`)
-            alert(`se ha registrado ${user.email} ID:${user.uid}`)
+            console.log(`Se ha registrado un nuevo usuario con el email: ${user.email} y ID:${user.uid}`)
+            alert(`Se ha registrado ${user.email} ID:${user.uid}`)
             // ...
             // Guarda El usuario en Firestore
             createUser({
@@ -131,7 +136,7 @@ document.getElementById("anon").addEventListener("click", ()=>{anon()})
 // Controlar usuario logado
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-        console.log(`Está en el sistema:${user.email} ${user.uid}`);
+        console.log(`Está logeado el usuario:${user.email} ${user.uid}`);
     } else {
         console.log("no hay usuarios en el sistema");
     }
@@ -170,8 +175,8 @@ function subirPuntuacion(userId, userScore) {
 function sacarPuntuacion() {
     //const puntuacion2 = JSON.parse(localStorage.getItem("score"));
     const aciertosUser = aciertos;
-    console.log(aciertosUser);
-    console.log(fecha);
+    console.log(`Tus aciertos han sido: ${aciertosUser}`);
+    console.log(`La fecha de la partida ha sido: ${fecha}`);
     userScore = {"puntuacion":aciertosUser, "fecha":fecha}
 }
 
@@ -374,6 +379,17 @@ if (localStorage.length !== 0) {
     }
 }
 
+// Recupera los datos de las puntuaciones de los usuarios desde Firebase
+db.collection("usuarios").get().then((querySnapshot) => {
+    let data = { labels: [], series: [[]] }; // Inicializa el objeto de datos para la gráfica
+    querySnapshot.forEach((doc) => {
+        let usuario = doc.data();
+        data.labels.push(usuario.email); // Agrega el email del usuario como etiqueta para el eje x
+        data.series[0].push(usuario.puntuacion); // Agrega la puntuación del usuario como dato para el eje y
+    });
+    // Crea y personaliza la gráfica de Chartist
+    new Chartist.Bar('.ct-chart', data);
+});
 
 
 // grafica
@@ -399,5 +415,3 @@ var options = {
         }
     }
 };
-
-new Chartist.Bar('.ct-chart', data, options);
