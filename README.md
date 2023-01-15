@@ -15,5 +15,4 @@ Al terminar las 10 preguntas aparecera nuestro resultado obtenido.
 Disfurtalo, 
 Mucha suerte!
 
-
-  https://zmanak.github.io/quiz-ii/
+Este repo es una recompilación de https://zmanak.github.io/quiz-ii/
